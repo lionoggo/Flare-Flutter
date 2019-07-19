@@ -24,6 +24,7 @@ class FlareActor extends LeafRenderObjectWidget {
   final Color color;
   final String boundsNode;
   final bool sizeFromArtboard;
+  final String package;
 
   const FlareActor(this.filename,
       {this.boundsNode,
@@ -36,12 +37,14 @@ class FlareActor extends LeafRenderObjectWidget {
       this.callback,
       this.color,
       this.shouldClip = true,
-      this.sizeFromArtboard = false});
+      this.sizeFromArtboard = false,
+      this.package});
 
   @override
   RenderObject createRenderObject(BuildContext context) {
     return FlareActorRenderObject()
       ..assetBundle = DefaultAssetBundle.of(context)
+      ..package = package
       ..filename = filename
       ..fit = fit
       ..alignment = alignment
@@ -94,6 +97,7 @@ class FlareAnimationLayer {
 class FlareActorRenderObject extends FlareRenderBox {
   Mat2D _lastControllerViewTransform;
   String _filename;
+  String _package;
   String _animationName;
   String _boundsNodeName;
   FlareController _controller;
@@ -213,13 +217,25 @@ class FlareActorRenderObject extends FlareRenderBox {
     load();
   }
 
+  String get package => _package;
+
+  set package(String value) {
+    if (value == _package) {
+      return;
+    }
+    _package = value;
+  }
+
+  String get keyName =>
+      _package == null ? _filename : 'packages/$_package/$_filename';
+
   @override
   void load() {
-    if (_filename == null) {
+    if (keyName == null) {
       return;
     }
     super.load();
-    loadFlare(_filename).then((FlutterActor actor) {
+    loadFlare(keyName).then((FlutterActor actor) {
       if (actor == null || actor.artboard == null) {
         return;
       }
