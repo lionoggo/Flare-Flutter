@@ -9,9 +9,10 @@ dependencies:
   flutter:
     sdk: flutter
   flare_dart:
-    git: 
-      url: git://github.com/2d-inc/Flare-Flutter.git
-      ref: dev
+#    path: ../flare_dart
+    git:
+      url: git@github.com:lionoggo/Flare-Flutter.git
+      ref: feature/flutter_154
       path: flare_dart
 dev_dependencies:
   flutter_test:
